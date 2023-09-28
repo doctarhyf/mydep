@@ -3,12 +3,25 @@ import {
   Card,
   CardBody,
   CardFooter,
+  Checkbox,
+  Input,
   Typography,
 } from "@material-tailwind/react";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../helpers/flow";
+import { useState } from "react";
 
 export default function Home({}) {
+  const [items, setitems] = useState([
+    ...Array(10).fill({
+      desc: "Achat etc ...",
+      amount: 100,
+      cur: "USD",
+      paid: true,
+      created_at: new Date().toISOString(),
+      paid_at: new Date().toISOString(),
+    }),
+  ]);
   const navigate = useNavigate();
 
   function onEditItem(it) {
@@ -22,40 +35,49 @@ export default function Home({}) {
 
   return (
     <div className="flex flex-col p-2">
-      {[
-        ...Array(10).fill({
-          desc: "Achat etc ...",
-          amount: 100,
-          cur: "USD",
-          date: new Date().toISOString(),
-        }),
-      ].map((it, i) => (
-        <Card className="mt-6 w-96">
-          <CardBody>
-            <Typography
-              variant="h5"
-              color="blue-gray"
-              className="mb-2 flex gap-2"
-            >
-              {it.amount}{" "}
-              <Typography className="text-xs text-green-600 font-bold ">
-                {it.cur}
-              </Typography>
-            </Typography>
-            <Typography>
-              The place is close to Barceloneta Beach and bus stop just 2 min by
-              walk and near to &quot;Naviglio&quot; where you can enjoy the main
-              night life in Barcelona.
-            </Typography>
-          </CardBody>
-          <CardFooter className="pt-0 flex gap-4 justify-end">
-            <Button onClick={(e) => onEditItem(it)}>MODIFIER</Button>
-            <Button onClick={(e) => onDelItem(it)} color="red">
-              SUPPRIMER
-            </Button>
-          </CardFooter>
-        </Card>
-      ))}
+      <table className="text-sm">
+        <thead>
+          <tr>
+            <td>No</td>
+            <td>Desc</td>
+            <td>Amount/Cur</td>
+            <td>Due Date</td>
+            <td>Days Remaining</td>
+            <td>Paied</td>
+          </tr>
+          <tr>
+            <td colSpan={items.length - 1}>
+              <Input label="Search" icon={<i className="fas fa-heart" />} />
+            </td>
+          </tr>
+          <tr className="font-bold ">
+            <td className="p-2 bg-blue-gray-100/50">TOTAL</td>
+            <td className="p-2 bg-blue-gray-100/50" colSpan={items.length - 2}>
+              500USD
+            </td>
+          </tr>
+        </thead>
+        <tbody>
+          {items.map((it, i) => (
+            <tr>
+              <td>{i + 1}</td>
+              <td>
+                <div>{it.desc}</div>
+                <div className="text-xs text-black/50">{it.created_at}</div>
+              </td>
+              <td>
+                {it.amount} {it.cur}
+              </td>
+
+              <td>{it.paid_at && it.paid_at}</td>
+              <td>3days</td>
+              <td>
+                <Checkbox checked={it.paid} />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }

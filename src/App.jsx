@@ -7,6 +7,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Layout from "./pages/Layout";
 import Home from "./pages/Home";
 import { ROUTES } from "./helpers/flow";
+import Stats from "./pages/Stats";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path={ROUTES.NEW_ITEM.path} element={<NewItem />} />
+          <Route path={ROUTES.STATS.path} element={<Stats />} />
         </Route>
       </Routes>
     </BrowserRouter>

@@ -1,17 +1,21 @@
-import { Outlet, Link } from "react-router-dom";
+import { Outlet, Link, NavLink } from "react-router-dom";
 import { ROUTES } from "../helpers/flow";
 
 const Layout = () => {
   return (
     <>
       <nav>
-        <ul>
-          <li>
-            <Link to="/">Home</Link>
-          </li>
-          <li>
-            <Link to={ROUTES.NEW_ITEM.path}>New Item</Link>
-          </li>
+        <ul className="flex flex-col sm:flex-row p-4 bg-teal-600 text-white justify-around">
+          {Object.values(ROUTES).map((rt, i) => (
+            <li key={i}>
+              <NavLink
+                to={rt.path}
+                className={({ isActive }) => (isActive ? "bg-red-500" : "")}
+              >
+                {rt.title}
+              </NavLink>
+            </li>
+          ))}
         </ul>
       </nav>
 
