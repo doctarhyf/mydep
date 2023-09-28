@@ -23,7 +23,7 @@ export default function NewItem({}) {
   const [data, setdata] = useState({});
 
   useState(() => {
-    const item = location.state.item;
+    const item = location.state?.item;
     if (item) setdata(item);
   }, []);
 
