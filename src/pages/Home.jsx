@@ -40,11 +40,11 @@ export default function Home({}) {
         <thead>
           <tr>
             <td>No</td>
-            <td>Desc</td>
-            <td>Amount/Cur</td>
-            <td>Due Date</td>
-            <td>Days Remaining</td>
-            <td>Paied</td>
+            <td>DESC.</td>
+            <td>AMT.</td>
+            <td className={` hidden sm:block `}>DUE</td>
+            <td>DAYS R.</td>
+            <td>PYD</td>
           </tr>
           <tr>
             <td colSpan={items.length - 1}>
@@ -61,7 +61,12 @@ export default function Home({}) {
         <tbody>
           {items.map((it, i) => (
             <tr
-              onClick={(e) => onEditItem(it)}
+              key={i}
+              onClick={(e) => {
+                if (e.target.checked === undefined) {
+                  onEditItem(it);
+                }
+              }}
               className="hover:bg-teal-100 cursor-pointer hover:text-teal-900"
             >
               <td>{i + 1}</td>
@@ -73,7 +78,9 @@ export default function Home({}) {
                 {it.amount} {it.cur}
               </td>
 
-              <td>{it.paid_at && it.paid_at}</td>
+              <td className={` hidden sm:block `}>
+                {it.paid_at && it.paid_at}
+              </td>
               <td>3days</td>
               <td>
                 <Checkbox checked={it.paid} />
