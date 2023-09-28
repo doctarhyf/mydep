@@ -10,7 +10,12 @@ const Layout = () => {
             <li key={i}>
               <NavLink
                 to={rt.path}
-                className={({ isActive }) => (isActive ? "bg-red-500" : "")}
+                className={({ isActive, isPending }) => {
+                  let def =
+                    " text-white hover:bg-teal-100 hover:text-teal-800 p-2 rounded-md";
+
+                  return isActive ? def + " bg-teal-100 text-teal-800 " : def;
+                }}
               >
                 {rt.title}
               </NavLink>
