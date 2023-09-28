@@ -7,12 +7,12 @@ const Layout = () => {
       <nav>
         <ul className="flex flex-col sm:flex-row p-4 bg-teal-600 text-white justify-around">
           {Object.values(ROUTES).map((rt, i) => (
-            <li key={i}>
+            <li className="my-4" key={i}>
               <NavLink
                 to={rt.path}
                 className={({ isActive, isPending }) => {
                   let def =
-                    " text-white hover:bg-teal-100 hover:text-teal-800 p-2 rounded-md";
+                    " text-white  hover:bg-teal-100 hover:text-teal-800 p-2 rounded-md";
 
                   return isActive ? def + " bg-teal-100 text-teal-800 " : def;
                 }}
