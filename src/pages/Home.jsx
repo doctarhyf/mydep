@@ -19,6 +19,7 @@ export default function Home({}) {
       cur: "USD",
       paid: true,
       created_at: new Date().toISOString(),
+      due_at: new Date().toISOString(),
       paid_at: new Date().toISOString(),
     }),
   ]);
@@ -59,7 +60,10 @@ export default function Home({}) {
         </thead>
         <tbody>
           {items.map((it, i) => (
-            <tr>
+            <tr
+              onClick={(e) => onEditItem(it)}
+              className="hover:bg-teal-100 cursor-pointer hover:text-teal-900"
+            >
               <td>{i + 1}</td>
               <td>
                 <div>{it.desc}</div>
