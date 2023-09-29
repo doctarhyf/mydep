@@ -25,14 +25,17 @@ export default function Home({}) {
   }, []);
 
   function loadData() {
+    setloading(true);
     setitems([]);
     setitemsfiltered([]);
 
     loadAllMyDep(
       (d) => {
         setitems(d);
+        setloading(false);
       },
       (e) => {
+        setloading(false);
         console.log(e);
         alert("Error loading data (" + e.code + ").\n" + e.message);
       }
@@ -98,8 +101,8 @@ export default function Home({}) {
                 {it.amount} {it.cur}
               </td>
 
-              <td className={` hidden sm:block `}>
-                {it.paid_at && it.paid_at}
+              <td valign="center" className={` hidden sm:block `}>
+                {it.due_at && it.due_at}
               </td>
               <td>3days</td>
               <td>
@@ -108,7 +111,7 @@ export default function Home({}) {
             </tr>
           ))}
 
-          {items.length === 0 && (
+          {items.length === 0 && !loading && (
             <tr>
               <td
                 align="center"

@@ -14,6 +14,7 @@ import {
 } from "@heroicons/react/24/solid";
 import { ROUTES } from "../helpers/flow";
 import DOBInput from "../comps/DOBInput";
+import { AddNewItemToTable, TABLE_NAME, UpdateItem } from "../db/sb";
 
 const regex = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/;
 
@@ -64,6 +65,26 @@ export default function NewItem({}) {
     setdateisvalid(regex.test(v));
 
     setdata((old) => ({ ...old, [n]: v }));
+  }
+
+  function onSaveDep() {
+    if (editing) {
+      const id = data.id;
+    } else {
+      AddNewItemToTable(
+        data,
+        TABLE_NAME.MY_DEPS,
+        (res) => {
+          alert("Item added!");
+          console.log("Item added!\n", res);
+          navigate(ROUTES.HOME.path);
+        },
+        (e) => {
+          alert("Error (" + e.code + ")\n" + e.message);
+          console.log("Erreur adding item.\n", e);
+        }
+      );
+    }
   }
 
   return (
@@ -134,23 +155,18 @@ export default function NewItem({}) {
           </svg>
           <div className="flex flex-col">
             <div>For example : 25/12/2023</div>
-            {
-              <div
-                className={` px-1 rounded-md text-white w-fit ${
-                  dateisvalid ? "bg-green-500" : "bg-red-500"
-                } `}
-              >
-                {" "}
-                Date {dateisvalid ? " is valid" : " is not valid"}{" "}
-              </div>
-            }
           </div>
         </Typography>
       </div>
 
       <div className="flex justify-between">
         <Button
-          className={`  ${dateisvalid ? "visible" : "collapse"} `}
+          onClick={(e) => onSaveDep()}
+          className={`  ${
+            dateisvalid && data.label !== "" && data.amount !== 0
+              ? "visible"
+              : "collapse"
+          } `}
           color="teal"
         >
           {editing ? "UPDATE" : "INSERT"}
@@ -160,6 +176,16 @@ export default function NewItem({}) {
         </Button>
 
         {editing && <Button color="red">SUPPRIMER</Button>}
+      </div>
+
+      <div
+        className={` px-1 rounded-md text-white w-fit ${
+          dateisvalid ? "bg-green-500" : "bg-red-500"
+        } `}
+      >
+        {dateisvalid
+          ? "Formulaire valide"
+          : "Veuillez correctement remplir tous les champs"}{" "}
       </div>
 
       <>{JSON.stringify(data)}</>
