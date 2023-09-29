@@ -19,10 +19,25 @@ export default function Home({}) {
   const [itemsfiltered, setitemsfiltered] = useState([]);
   const [loading, setloading] = useState(false);
   const navigate = useNavigate();
+  const [total, settotal] = useState([0, 0]);
 
   useEffect(() => {
     loadData();
   }, []);
+
+  function tot(itz, cur) {
+    const t = itz.reduce((acc, cv) => {
+      if (cv.cur === cur) {
+        console.log("cv", cv);
+        return acc + cv.amount;
+      } else {
+        return acc + 0;
+      }
+    }, 0);
+
+    console.log(t);
+    return t;
+  }
 
   function loadData() {
     setloading(true);
@@ -32,7 +47,13 @@ export default function Home({}) {
     loadAllMyDep(
       (d) => {
         setitems(d);
+        setitemsfiltered(d);
         setloading(false);
+
+        const totusd = tot(itemsfiltered, "USD");
+        const totcdf = tot(itemsfiltered, "CDF");
+
+        settotal([totusd, totcdf]);
       },
       (e) => {
         setloading(false);
@@ -53,7 +74,7 @@ export default function Home({}) {
 
   return (
     <div className="flex flex-col p-2">
-      <table className="text-sm">
+      <table className="text-sm md:max-w-[800px] md:min-w-[800px] md:mx-auto">
         <thead>
           <tr>
             <td colSpan={6} align="center">
@@ -77,7 +98,7 @@ export default function Home({}) {
           <tr className="font-bold ">
             <td className="p-2 bg-blue-gray-100/50 w-2">TOTAL</td>
             <td className="p-2 bg-blue-gray-100/50" colSpan={6}>
-              0
+              {total[0]}USD, {total[1]}CDF
             </td>
           </tr>
         </thead>

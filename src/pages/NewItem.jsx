@@ -14,7 +14,13 @@ import {
 } from "@heroicons/react/24/solid";
 import { ROUTES } from "../helpers/flow";
 import DOBInput from "../comps/DOBInput";
-import { AddNewItemToTable, TABLE_NAME, UpdateItem } from "../db/sb";
+import {
+  AddNewItemToTable,
+  DeleteItem,
+  TABLE_NAME,
+  UpdateItem,
+} from "../db/sb";
+import load from "../assets/load.svg";
 
 const regex = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/;
 
@@ -22,6 +28,7 @@ export default function NewItem({}) {
   const [dateisvalid, setdateisvalid] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const [loading, setloading] = useState(false);
   const [editing, setediting] = useState(
     location.search.includes("edit") && location.state.item
   );
@@ -87,8 +94,39 @@ export default function NewItem({}) {
     }
   }
 
+  function onDelItem(data) {
+    if (!confirm("Are you sure?")) {
+      return;
+    }
+
+    setloading(true);
+
+    DeleteItem(
+      TABLE_NAME.MY_DEPS,
+      data.id,
+      (res) => {
+        setloading(false);
+
+        console.log(res);
+        alert("Item deleted");
+        navigate(ROUTES.HOME.path);
+      },
+      (e) => {
+        setloading(false);
+
+        console.log(e);
+        alert("Error deleting item code (" + e.code + ")!\n" + e.message);
+      }
+    );
+  }
+
   return (
-    <div className="flex w-96 flex-col gap-6 p-4">
+    <div className={`  flex mx-auto w-96 flex-col gap-6 p-4`}>
+      <div
+        className={` ${loading ? "visible" : "collapse"} flex justify-center`}
+      >
+        <img src={load} width={30} />
+      </div>
       <div className="flex">
         <Typography variant="h1">{data.amount || ""}</Typography>
         <Typography variant="h5" color="green">
@@ -175,7 +213,11 @@ export default function NewItem({}) {
           ANNULER
         </Button>
 
-        {editing && <Button color="red">SUPPRIMER</Button>}
+        {editing && (
+          <Button onClick={(e) => onDelItem(data)} color="red">
+            SUPPRIMER
+          </Button>
+        )}
       </div>
 
       <div
