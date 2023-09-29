@@ -19,25 +19,12 @@ export default function Home({}) {
   const [itemsfiltered, setitemsfiltered] = useState([]);
   const [loading, setloading] = useState(false);
   const navigate = useNavigate();
-  const [total, settotal] = useState([0, 0]);
+  const [total, settotal] = useState(0);
+  const [exch, setexch] = useState(2300);
 
   useEffect(() => {
     loadData();
   }, []);
-
-  function tot(itz, cur) {
-    const t = itz.reduce((acc, cv) => {
-      if (cv.cur === cur) {
-        console.log("cv", cv);
-        return acc + cv.amount;
-      } else {
-        return acc + 0;
-      }
-    }, 0);
-
-    console.log(t);
-    return t;
-  }
 
   function loadData() {
     setloading(true);
@@ -50,10 +37,18 @@ export default function Home({}) {
         setitemsfiltered(d);
         setloading(false);
 
-        const totusd = tot(itemsfiltered, "USD");
-        const totcdf = tot(itemsfiltered, "CDF");
+        let usd = 0;
+        let cdf = 0;
 
-        settotal([totusd, totcdf]);
+        itemsfiltered.filter((it, i) => {
+          if (it.cur === "CDF") {
+            cdf += it.amount;
+          } else {
+            usd += it.amount;
+          }
+        });
+
+        settotal([usd, cdf]);
       },
       (e) => {
         setloading(false);
@@ -98,12 +93,12 @@ export default function Home({}) {
           <tr className="font-bold ">
             <td className="p-2 bg-blue-gray-100/50 w-2">TOTAL</td>
             <td className="p-2 bg-blue-gray-100/50" colSpan={6}>
-              {total[0]}USD, {total[1]}CDF
+              {total[0]}USD et {total[1]}CDF
             </td>
           </tr>
         </thead>
         <tbody>
-          {items.map((it, i) => (
+          {itemsfiltered.map((it, i) => (
             <tr
               key={i}
               onClick={(e) => {
@@ -127,12 +122,12 @@ export default function Home({}) {
               </td>
               <td>3days</td>
               <td>
-                <Checkbox checked={it.paid} />
+                <Checkbox checked={it.paid} onChange={(e) => onPayChange(it)} />
               </td>
             </tr>
           ))}
 
-          {items.length === 0 && !loading && (
+          {itemsfiltered.length === 0 && !loading && (
             <tr>
               <td
                 align="center"
