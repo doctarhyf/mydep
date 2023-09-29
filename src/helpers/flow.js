@@ -5,7 +5,7 @@ export const ROUTES = {
 };
 
 const obj = {
-  desc: "Achat etc ...",
+  label: "Achat etc ...",
   amount: 100,
   cur: "USD",
   paid: true,

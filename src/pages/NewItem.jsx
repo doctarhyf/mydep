@@ -53,10 +53,12 @@ export default function NewItem({}) {
       <Input label="Due Date" value={data.due_at || ""} />
 
       <div className="flex justify-between">
-        <Button color="teal">INSERER</Button>
+        <Button color="teal">{editing ? "UPDATE" : "INSERT"}</Button>
         <Button onClick={onAnnuler} color="red">
           ANNULER
         </Button>
+
+        {editing && <Button color="red">SUPPRIMER</Button>}
       </div>
     </div>
   );

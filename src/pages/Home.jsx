@@ -9,21 +9,35 @@ import {
 } from "@material-tailwind/react";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../helpers/flow";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { loadAllMyDep } from "../db/db";
+import sad from "../assets/sad.png";
+import load from "../assets/load.svg";
 
 export default function Home({}) {
-  const [items, setitems] = useState([
-    ...Array(10).fill({
-      desc: "Achat etc ...",
-      amount: 100,
-      cur: "USD",
-      paid: true,
-      created_at: new Date().toISOString(),
-      due_at: new Date().toISOString(),
-      paid_at: new Date().toISOString(),
-    }),
-  ]);
+  const [items, setitems] = useState([]);
+  const [itemsfiltered, setitemsfiltered] = useState([]);
+  const [loading, setloading] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  function loadData() {
+    setitems([]);
+    setitemsfiltered([]);
+
+    loadAllMyDep(
+      (d) => {
+        setitems(d);
+      },
+      (e) => {
+        console.log(e);
+        alert("Error loading data (" + e.code + ").\n" + e.message);
+      }
+    );
+  }
 
   function onEditItem(it) {
     navigate(ROUTES.NEW_ITEM.path + "?edit", { state: { item: it } });
@@ -39,6 +53,16 @@ export default function Home({}) {
       <table className="text-sm">
         <thead>
           <tr>
+            <td colSpan={6} align="center">
+              {loading && <img src={load} width={30} />}
+            </td>
+          </tr>
+          <tr>
+            <td colSpan={6}>
+              <Input label="Search" icon={<i className="fas fa-heart" />} />
+            </td>
+          </tr>
+          <tr>
             <td>No</td>
             <td>DESC.</td>
             <td>AMT.</td>
@@ -46,15 +70,11 @@ export default function Home({}) {
             <td>DAYS R.</td>
             <td>PYD</td>
           </tr>
-          <tr>
-            <td colSpan={items.length - 1}>
-              <Input label="Search" icon={<i className="fas fa-heart" />} />
-            </td>
-          </tr>
+
           <tr className="font-bold ">
-            <td className="p-2 bg-blue-gray-100/50">TOTAL</td>
-            <td className="p-2 bg-blue-gray-100/50" colSpan={items.length - 2}>
-              500USD
+            <td className="p-2 bg-blue-gray-100/50 w-2">TOTAL</td>
+            <td className="p-2 bg-blue-gray-100/50" colSpan={6}>
+              0
             </td>
           </tr>
         </thead>
@@ -71,7 +91,7 @@ export default function Home({}) {
             >
               <td>{i + 1}</td>
               <td>
-                <div>{it.desc}</div>
+                <div>{it.label}</div>
                 <div className="text-xs text-black/50">{it.created_at}</div>
               </td>
               <td>
@@ -87,6 +107,20 @@ export default function Home({}) {
               </td>
             </tr>
           ))}
+
+          {items.length === 0 && (
+            <tr>
+              <td
+                align="center"
+                valign="center"
+                className="p-8 text-center"
+                colSpan={6}
+              >
+                <img className="mx-auto" src={sad} width={60} />
+                <p>No Items yet</p>
+              </td>
+            </tr>
+          )}
         </tbody>
       </table>
     </div>
