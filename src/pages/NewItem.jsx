@@ -187,8 +187,6 @@ export default function NewItem({}) {
           ? "Formulaire valide"
           : "Veuillez correctement remplir tous les champs"}{" "}
       </div>
-
-      <>{JSON.stringify(data)}</>
     </div>
   );
 }
